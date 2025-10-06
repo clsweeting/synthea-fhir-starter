@@ -1,0 +1,67 @@
+services:
+  db:
+    image: postgres:17
+    container_name: hapi-db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-hapi}
+      POSTGRES_USER: ${POSTGRES_USER:-hapi}
+      POSTGRES_PASSWORD: ${POSTGRES_PASS:-hapi}
+    ports:
+      - "5432:5432"
+    volumes:
+      - hapi-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-hapi} -d ${POSTGRES_DB:-hapi}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  hapi:
+    image: hapiproject/hapi:latest
+    container_name: hapi-fhir
+    depends_on:
+      db:
+        condition: service_healthy
+    ports: ["8080:8080"]
+    environment:
+      # FHIR version (this is the one causing the crash)
+      HAPI_FHIR_VERSION: R4
+
+      # Postgres
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/hapi
+      SPRING_DATASOURCE_USERNAME: hapi
+      SPRING_DATASOURCE_PASSWORD: hapi
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: ca.uhn.fhir.jpa.model.dialect.HapiFhirPostgresDialect
+
+      # JVM heap
+      JAVA_TOOL_OPTIONS: "-Xms3g -Xmx3g -XX:+UseG1GC"
+
+
+  # # Optional: DICOM server with DICOMweb for images/x-rays
+  # orthanc:
+  #   image: osimis/orthanc:latest
+  #   container_name: orthanc
+  #   ports:
+  #     - "8042:8042"
+  #   environment:
+  #     ORTHANC__REGISTERED_USERS: '["${ORTHANC_USER:-demo}","${ORTHANC_PASS:-demo}"]'
+  #     ORTHANC__DICOM_WEB__ENABLE: "true"
+  #     ORTHANC__DICOM_WEB__ROOT: "/dicom-web"
+  #     ORTHANC__ORTHANC__Name: "Local Orthanc"
+  #   volumes:
+  #     - orthanc-data:/var/lib/orthanc/db
+
+  # # Optional: static web server for charts (serves ./charts on host)
+  # charts:
+  #   image: nginx:alpine
+  #   container_name: charts
+  #   ports:
+  #     - "9000:80"
+  #   volumes:
+  #     - ./charts:/usr/share/nginx/html/charts:ro
+  #   # Access charts at http://localhost:9000/charts/<filename>.png
+
+volumes:
+  hapi-data:
+  # orthanc-data:
