@@ -247,7 +247,7 @@ def identify_patients_with_observations(codes=None, category=None, sample=1000, 
     >>> counts.most_common(3)
     [('172422', 303), ('170278', 151), ('169697', 141)]
     """
-    params = {"_count": 200}
+    params = {"_count": 1000}
     if codes:
         params["code"] = ",".join(codes)
     if category:
@@ -258,8 +258,8 @@ def identify_patients_with_observations(codes=None, category=None, sample=1000, 
     patients = {}
     url = "Observation"
     while True:
-        js = fhir_get(url, params=params)
-        entries = js.get("entry", [])
+        js = fhir_get(url, params=params)       # js will be the search result bundle. dict_keys(['resourceType', 'id', 'meta', 'type', 'link', 'entry'])
+        entries = js.get("entry", [])           # Get the actual search results list
         for e in entries:
             res = e["resource"]
             subj = res.get("subject", {})
