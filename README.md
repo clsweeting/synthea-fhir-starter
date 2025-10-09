@@ -31,10 +31,12 @@ Technologies:
 2. [Load & serve FHIR bundles into HAPI FHIR server](./docs/2-hapi-fhir.md)
 3. [Use HAPI FHIR with Postgres](./docs/3-hapi-fhir-with-postgres.md) for data persistence & larger patient sets  
 4. [Connect an LLM with a FHIR MCP server](./docs/4-fhir-mcp-server.md)
-5. [Generate charts using FHIR observational data](./docs/5-observational-data-charts.md)
+5. [Querying FHIR](./docs/5-querying-fhir.md) to become familiar with the data 
+6. [Clinical coding](./docs/6-clinical-coding.md)
+7. [Generate charts using FHIR observational data](./docs/7-observational-data-charts.md)
 
 
-## To do:
+## To do (or not):
 
 - DICOM images using Orthanc 
 - Test HAPI FHIR's GraphQL API  
