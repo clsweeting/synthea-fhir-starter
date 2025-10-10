@@ -1,0 +1,20 @@
+[project]
+name = "synthea-fhir-starter"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Chas Sweeting",email = "77371250+clsweeting@users.noreply.github.com"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "matplotlib (>=3.10.6,<4.0.0)",
+    "ruff (>=0.13.3,<0.14.0)",
+    "requests (>=2.32.5,<3.0.0)",
+    "ipython (>=9.6.0,<10.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

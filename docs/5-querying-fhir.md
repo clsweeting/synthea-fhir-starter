@@ -564,3 +564,34 @@ Notice:
 <br>
 
 ------------------------
+
+
+## Advanced queries 
+
+It is possible to perform filtering when querying the FHIR API. For example: 
+
+
+### Filter with `_has`  
+
+e.g. Patients with laboratory observations: 
+
+```
+GET /Patient?_has:Observation:subject:category=laboratory
+```
+
+e.g. Patients with a specific observation: 
+
+```
+GET /Patient?_has:Observation:subject:code=http://loinc.org|4548-4
+```
+
+
+### Specify fields with `_elements` 
+
+If paging through responses, you may wish to reduce the attributes of each search result. 
+
+e.g. Just the id, name, gender, date of birth: 
+
+```
+GET /Patient?_has:Observation:subject:category=laboratory&_elements=id,name,gender,birthDate&_count=200
+```

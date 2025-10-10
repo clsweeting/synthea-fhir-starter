@@ -29,8 +29,36 @@ For a given visualization (say, cholesterol or BMI trend), you ideally want:
 
 ### Script to identify chartable patients 
 
-The function in `scripts/identify_chartable_patients.py` does as its name says. 
+The functions in `scripts/identify_chartable_patients.py` help: 
+- identify patients with observational data 
+- group & count the observation types (categories) per patient 
+- group & count the actual LOINC codes per patient 
+- logically group the observational data series for charting 
 
- See the docstring for details. 
 
+Given the output of the above, you can then use the function in `scripts/create_charts.py` to generate PNG charts
+
+
+### Usage 
+
+Assuming you've created/defined the functions in your REPL (this is a spike after all):
+
+```python 
+pid = "173418"                      
+
+# Fetch only obsevations clinical data 
+labs   = get_observations_for_patient(pid, category="laboratory")
+vitals = get_observations_for_patient(pid, category="vital-signs")
+obs = labs + vitals 
+
+# Find chartable codes using the pre-fetched data:
+chartables = get_chartable_codes_for_patient(pid, obs=obs)  # ignores 'categories' & 'sample' since obs is provided
+
+# Group (excluding surveys/SDOH - e.g. household size):
+groups = group_chartables(chartables, include_surveys=False)
+
+# Render PNGs:
+pngs = render_groups_to_png(pid, groups, out_dir="./charts", since=None, until=None)
+print(pngs)
+```
  
